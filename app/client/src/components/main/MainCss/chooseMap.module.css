@@ -1,0 +1,190 @@
+/* Main Container */
+.main-div {
+  width: 800px;
+  max-width: 100%;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.main-div > h1 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Map Selection Container */
+.maps-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.map-card {
+  width: 280px;
+  height: 280px;
+  border: 1px solid #333;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #ffffff;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.map-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.map-images {
+  width: 90%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.map-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 10px;
+  color: #333;
+}
+
+/* Group Name Input */
+.main-div-name {
+  width: 800px;
+  max-width: 100%;
+  height: 200px;
+  margin: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  outline: 1px solid rgb(8, 8, 8);
+}
+
+.group-input {
+  width: 90%;
+  max-width: 400px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s ease;
+  color: gray;
+}
+.color-dropdown-div {
+  width: 90%;
+  max-width: 400px;
+
+  /* outline: solid 1px black; */
+  margin-top: 20px;
+}
+.color-dropdown-div > button {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  color: gray;
+  text-align: left;
+
+  position: relative;
+}
+
+.group-input:focus {
+  border-color: #090a0a;
+}
+
+/* Proceed Button */
+.proceed-button {
+  display: block;
+  margin: 18px auto;
+  margin-top: 25px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #050505;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.proceed-button:hover {
+  background-color: #080a0e;
+}
+
+/* Shared or Generic Classes */
+.main-div-1 {
+  width: 400px;
+  max-width: 90%;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: #090a0a;
+}
+
+.submit-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #050505;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #080a0e;
+}
+
+.error-msg {
+  color: red;
+  margin-top: 35px;
+  font-size: large;
+  font-weight: 700;
+}

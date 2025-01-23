@@ -1,0 +1,17 @@
+.navigateTo-div {
+  color: black;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+
+  margin: 10px;
+
+  display: block;
+}
+
+.navigateTo-div > a {
+  color: inherit;
+}
+
+navigateTo-div a:visited {
+  color: inherit;
+}

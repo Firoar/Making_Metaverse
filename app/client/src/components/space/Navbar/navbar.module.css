@@ -1,0 +1,40 @@
+.space-navbar {
+  height: 80px;
+  outline: solid green 1px;
+
+  position: relative;
+
+  gap: 15px;
+}
+
+.space-navbar > h1 {
+  text-align: center;
+}
+
+.space-navbar-button-div {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 150px;
+  /* border: solid red 1px; */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.space-navbar-button-div > button {
+  margin: auto 18px;
+  width: 70%;
+  height: 45%;
+
+  border-radius: 10px;
+  /* border: solid 1px black; */
+
+  background-color: black;
+  color: white;
+
+  font-size: larger;
+  font-weight: 700;
+}

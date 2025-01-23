@@ -1,0 +1,28 @@
+.space-div {
+  min-width: 780px;
+  height: 885px;
+
+  max-width: 1300px;
+  /* width: 100%; */
+
+  /* width: 90%; */
+
+  display: flex;
+  flex-direction: column;
+
+  position: relative;
+
+  /* border: solid 1px black; */
+}
+
+.space-main-div {
+  height: 780px;
+  /* border: solid 1px yellow; */
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 25px;
+}

@@ -1,0 +1,130 @@
+.chatBox-div {
+  display: none;
+}
+
+@media (min-width: 1300px) {
+  .chatBox-div {
+    display: flex;
+    width: 260px;
+    height: 100%;
+    /* border: solid purple 1px; */
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+  }
+}
+
+.chatBox-heading {
+  position: absolute;
+  top: 0;
+  left: 5%;
+  width: 90%;
+  height: 50px;
+  border: solid 1px black;
+  border-bottom: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chats {
+  position: absolute;
+  top: 50px;
+  left: 5%;
+  width: 90%;
+  height: calc(100% - 50px);
+  border: 1px solid black;
+}
+
+.send-chat {
+  width: 100%;
+  height: 60px;
+  border-top: 1px solid black;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-content {
+  width: 100%;
+  height: calc(100% - 60px);
+
+  overflow: scroll;
+  scrollbar-width: none;
+}
+.chat-content::-webkit-scrollbar {
+  display: none;
+}
+
+.send-chat-text-area-div {
+  width: 81%;
+  height: 80%;
+  overflow: scroll;
+  scrollbar-width: none;
+
+  border-radius: 5px;
+  outline: 1px solid black;
+}
+.send-chat-text-area-div::-webkit-scrollbar {
+  display: none;
+}
+
+.send-chat-text-area {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  scrollbar-width: none;
+  resize: none;
+  padding: 5px;
+  padding-left: 8px;
+
+  border: none;
+}
+.send-chat-text-area::-webkit-scrollbar {
+  display: none;
+}
+
+.send-chat-btn {
+  width: 15%;
+  height: 80%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.single-chat-div {
+  max-width: 80%;
+  min-width: 20%;
+  width: fit-content;
+  margin-left: 2%;
+  height: auto;
+
+  outline: solid 1px black;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-radius: 15px;
+}
+
+.single-chat-heading {
+  width: 100%;
+  height: 10%;
+
+  text-align: left;
+  padding-left: 8px;
+  padding-top: 3px;
+}
+.single-chat-content {
+  width: 100%;
+  word-wrap: break-word;
+  height: auto;
+
+  padding: 5px;
+  padding-left: 8px;
+}

@@ -1,0 +1,22 @@
+.submitBtn {
+  height: 38px;
+  border-radius: 5px;
+  background-color: black;
+  color: white;
+  border: solid black 1px;
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+  padding: 5px 15px; /* Horizontal padding added for better width */
+  text-align: center; /* Ensures the text is centered */
+  cursor: pointer; /* Indicates the button is clickable */
+  font-size: 16px; /* Ensures the text size is readable */
+}
+
+.submitBtn:focus {
+  outline: none; /* Removes the default focus outline */
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); /* Adds a custom focus ring for better accessibility */
+}
+
+.submitBtn:hover {
+  background-color: #333; /* Changes the background color on hover */
+}

@@ -1,0 +1,9 @@
+.authform-div > input {
+  display: block;
+  margin: 25px;
+
+  height: 28px;
+  min-width: 200px;
+  width: 70%;
+  padding: 5px;
+}

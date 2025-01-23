@@ -1,0 +1,16 @@
+.signUp-div {
+  min-width: 350px;
+  min-height: 450px;
+
+  max-width: 350px;
+  max-height: 500px;
+  width: 25%;
+  height: 25%;
+  border: solid black 1px;
+  border-radius: 10px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

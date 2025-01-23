@@ -1,0 +1,99 @@
+.main-div {
+  display: flex;
+  min-width: 200px;
+  min-height: 200px;
+
+  width: 25%;
+  height: 25%;
+  max-width: 300px;
+  max-height: 300px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  border: solid rgb(17, 16, 16) 1px;
+  border-radius: 10px;
+
+  position: relative;
+}
+
+.main-div > button {
+  display: block;
+  width: 75%;
+  height: 35px;
+  min-height: 45px;
+
+  min-width: 150px;
+
+  margin: 12px;
+  border-radius: 10px;
+  border: solid black 1px;
+  color: white;
+  background-color: black;
+  letter-spacing: 2px;
+  padding: 5px 15px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.main-div > button :focus {
+  outline: none;
+  box-shadow: 0 0 0 3px r;
+}
+.main-div > button:hover {
+  background-color: #333;
+}
+
+.color-options-div {
+  position: absolute;
+  width: 150px;
+  height: 358px;
+  border: 1px solid #ccc;
+  top: 240px;
+  right: 80px;
+  visibility: hidden; /* Initially hidden */
+  pointer-events: none; /* Prevent interaction when hidden */
+  transition: opacity 0.5s ease, visibility 0s 0.5s; /* Delay visibility change until after opacity transition */
+  cursor: pointer;
+}
+
+.main-div-req {
+  width: 900px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  /* border: solid 1px green; */
+}
+
+.color-option {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  height: 35px;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #ccc;
+  align-items: center;
+  /* justify-content: center; */
+}
+
+.color-option-div-show {
+  opacity: 1;
+  visibility: visible; /* Make it visible */
+  pointer-events: auto; /* Enable interaction */
+  transition: opacity 0.5s ease, visibility 0s; /* Make visibility change immediately */
+}
+
+.color-option-div-noshow {
+  opacity: 0;
+  visibility: hidden; /* Hide the element */
+  pointer-events: none; /* Prevent interaction */
+}
+.color-box {
+  width: 25px;
+  height: 25px;
+  margin: 5px 10px 5px 10px;
+}

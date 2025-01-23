@@ -1,0 +1,91 @@
+.map-div {
+  width: 780px;
+  height: 780px;
+  outline: solid 1px rgb(0, 0, 0);
+  /* margin-top: 15px; */
+
+  overflow: hidden;
+  position: relative;
+}
+
+.map-img {
+  image-rendering: auto; /* Default smooth rendering */
+  image-rendering: crisp-edges; /* For pixel art */
+  image-rendering: pixelated; /* Maintain pixelated appearance */
+  position: absolute;
+  /* width: 780px; */
+  width: 960px;
+  z-index: 1;
+
+  position: absolute;
+  top: 32px;
+  left: 16px;
+
+  transition: left 0.3s ease;
+  transition: right 0.3s ease;
+}
+
+.map-ball-div {
+  z-index: 2;
+  position: absolute;
+
+  /* transform: scale(2.3); */
+
+  top: calc(24 * 16px); /* 6px*/
+  left: calc(24 * 16px);
+
+  /* outline: 1px solid rgb(200, 255, 0); */
+}
+
+.map-ball-div > p {
+  margin-top: 22px;
+  text-align: center;
+  margin-right: 25px;
+  font-size: large;
+  font-weight: 500;
+
+  display: block;
+  /* outline: 1px solid rgb(0, 247, 255); */
+}
+
+.map-ball-img {
+  image-rendering: auto;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  position: absolute;
+  z-index: 2;
+
+  transform: scale(2.3);
+  /* outline: 1px solid red; */
+
+  /* 20px*/
+}
+
+.map-ball-other-div {
+  z-index: 2;
+  position: absolute;
+
+  /* outline: 1px solid rgb(38, 0, 255); */
+
+  height: 64px;
+  width: 64px;
+}
+
+.map-ball-other-div-p {
+  width: 100%;
+  /* outline: solid; */
+  margin-bottom: 16px;
+  margin-top: 5px;
+  font-size: large;
+  font-weight: 500;
+}
+
+.map-other-ball-img {
+  image-rendering: auto;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  z-index: 2;
+  transform: scale(2.3);
+
+  /* outline: 1px solid red; */
+}
