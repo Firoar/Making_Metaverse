@@ -28,9 +28,15 @@ const groupsSlice = createSlice({
     setAllGroups: (state, action) => {
       state.allGroups = action.payload;
     },
-    setGroupParticipants: (state, action) => {
+    setAllGroupParticipants: (state, action) => {
       state.groupParticipants = action.payload;
     },
+    setGroupParticipants: (state, action) => {
+      const { id, coordinates } = action.payload;
+
+      state.groupParticipants[id] = coordinates;
+    },
+
     setGroupIdToGroupName: (state, action) => {
       state.groupIdToGroupName = action.payload;
     },
@@ -77,6 +83,7 @@ const groupsSlice = createSlice({
 export const {
   setSelectedGroup,
   setGroupParticipants,
+  setAllGroupParticipants,
   setAllGroups,
   setGroupIdToGroupName,
   setSelectedGroupChat,

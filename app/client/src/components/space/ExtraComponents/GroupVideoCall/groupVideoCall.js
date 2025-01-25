@@ -2,7 +2,6 @@ import store from "../../../../store/store.js";
 import Peer from "simple-peer";
 import {
   displayGrid,
-  gridStyle,
   hideScrollBar,
   nameSpanCss,
   testingStyle,
@@ -106,9 +105,17 @@ export const showLocalPreview = (stream) => {
 
   Object.assign(div.style, videoDivCss);
 
+  div.addEventListener("click", () => {
+    console.log("clicked");
+    if (div.classList.contains("fullScreen")) {
+      div.classList.remove("fullScreen");
+    } else {
+      div.classList.add("fullScreen");
+    }
+  });
   const videoEle = document.createElement("video");
   videoEle.autoplay = true;
-  videoEle.muted = true;
+  videoEle.muted = false;
   videoEle.srcObject = stream;
 
   videoEle.onloadedmetadata = () => {
@@ -154,10 +161,18 @@ const showOtherPreview = (stream, otherUser) => {
   span.classList.add("user-name");
   Object.assign(span.style, nameSpanCss);
   Object.assign(div.style, videoDivCss);
+  div.addEventListener("click", () => {
+    console.log("clicked full screen");
+    if (div.classList.contains("fullScreen")) {
+      div.classList.remove("fullScreen");
+    } else {
+      div.classList.add("fullScreen");
+    }
+  });
 
   const videoEle = document.createElement("video");
   videoEle.autoplay = true;
-  videoEle.muted = true;
+  videoEle.muted = false;
   videoEle.srcObject = stream;
 
   videoEle.onloadedmetadata = () => {
@@ -248,4 +263,57 @@ export const handleConnInit = (data) => {
   const { connUserSocketId, userId } = data;
 
   prepareNewPeerConnection(connUserSocketId, userId, true);
+};
+
+export const toggleMic = (isMicMuted) => {
+  localStream.getAudioTracks()[0].enabled = isMicMuted ? true : false;
+};
+
+export const toggleCamera = (isDisabled) => {
+  localStream.getVideoTracks()[0].enabled = isDisabled ? true : false;
+};
+
+export const toggleScreenShare = (
+  isScreenSharingActive,
+  screenSharingStream
+) => {
+  console.log(screenSharingStream);
+  if (isScreenSharingActive) {
+    switchVideoTracks(localStream);
+    changeMyStreamToo(localStream);
+  } else {
+    switchVideoTracks(screenSharingStream);
+    changeMyStreamToo(screenSharingStream);
+  }
+};
+
+const switchVideoTracks = (newStream) => {
+  for (let socketId in peers) {
+    const peerStream = peers[socketId].streams[0];
+    for (let oldTrack of peerStream.getTracks()) {
+      for (let newTrack of newStream.getTracks()) {
+        if (oldTrack.kind === newTrack.kind) {
+          peers[socketId].replaceTrack(oldTrack, newTrack, peerStream);
+          break;
+        }
+      }
+    }
+  }
+};
+
+const changeMyStreamToo = (stream) => {
+  const groupVideoCallMainDiv = document.querySelector(
+    ".groupVideoCall-mainDiv"
+  );
+  const localUserVideoDiv =
+    groupVideoCallMainDiv.querySelector(".local-user-video");
+  if (localUserVideoDiv) {
+    const videoEle = localUserVideoDiv.querySelector("video");
+    if (videoEle) {
+      videoEle.srcObject = stream;
+      videoEle.onloadedmetadata = () => {
+        videoEle.play();
+      };
+    }
+  }
 };

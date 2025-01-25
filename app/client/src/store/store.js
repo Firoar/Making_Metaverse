@@ -9,6 +9,12 @@ const store = configureStore({
     movement: movementReducer,
     groups: groupsReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredPaths: ["groups.groupParticipants"],
+      },
+    }),
 });
 
 export default store;

@@ -15,6 +15,7 @@ import {
 } from "../controllers/appController.js";
 
 const router = express.Router();
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 router.get("/is-user-new", isAuth, async (req, res) => {
   await getIsUserNewContoller(req, res);

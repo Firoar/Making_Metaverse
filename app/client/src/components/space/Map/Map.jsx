@@ -5,17 +5,18 @@ import PlayerImage from "./PlayerImage/PlayerImage";
 import { useDispatch, useSelector } from "react-redux";
 import { getSocket } from "../../../services/socketService";
 import {
+  setGroupIdToGroupName,
   setGroupParticipants,
   setGroupVideoChatSeatsOccupied,
 } from "../../../store/features/groups/groupsSlice.js";
 import ParticipantsImage from "./ParticipantsImage/ParticipantsImage.jsx";
 import axios from "axios";
-import { setGrpPartcipantsAndIdToName } from "../GroupBox/GroupDiv.jsx";
 import { notify } from "../../../utils/toasts.js";
 import {
   belongInsideGroupVideoChairs,
   InGroupVideoChairs,
 } from "../../../utils/AllMaps.js";
+import { UpdateQueue } from "../../../utils/UpdateQueue.js";
 
 const Map = () => {
   const socket = getSocket(); // Ensure single socket instance
@@ -29,13 +30,21 @@ const Map = () => {
   const { playerX, playerY, mapTop, mapLeft } = useSelector(
     (state) => state.movement
   );
+  const setGrpPartcipantsAndIdToName = async (participants) => {
+    const idToName = {};
+    participants.forEach((p) => {
+      if (p) {
+        idToName[p.id] = [p.username, p.color];
+      }
+    });
+
+    dispatch(setGroupIdToGroupName(idToName));
+  };
 
   useEffect(() => {
     if (!selectedGroup || !selectedGroup.myId) return;
 
     const handleSomeoneJoined = (data) => {
-      console.log("someone-joinedsdddddddd", data);
-
       const dataToSend = {
         roomName: data.roomName,
         myInfo: {
@@ -47,10 +56,7 @@ const Map = () => {
       };
       socket.emit("take-my-coordinates", dataToSend);
     };
-
     const handleSomeoneSentCoordinates = async ({ data }) => {
-      console.log("someone sent their coorc : ", data);
-
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_SERVER_URL}api/id-to-name-and-color`,
@@ -62,34 +68,27 @@ const Map = () => {
           }
         );
         if (response.data.ok) {
-          setGrpPartcipantsAndIdToName(response.data.participants, dispatch);
+          await setGrpPartcipantsAndIdToName(response.data.participants);
         }
       } catch (error) {
-        // alert("Error!!!!");
-        notify("error while fetcging participants", "error");
-        console.log(error);
+        notify("Error while fetching participants", "error");
+        console.error(error);
       }
-      console.log(
-        data.posY,
-        data.posX,
-        InGroupVideoChairs(data.posY, data.posX)
-      );
-      if (InGroupVideoChairs(data.posY, data.posX)) {
-        console.log("yes-broo..........");
 
+      if (InGroupVideoChairs(data.posY, data.posX)) {
         const newSeatsOccupied = [
           ...groupVideoChatSeatsOccupied,
           [data.posY, data.posX],
         ];
-
         dispatch(setGroupVideoChatSeatsOccupied(newSeatsOccupied));
       }
 
-      const updatedParticipants = {
-        ...groupParticipants,
-        [data.id]: [data.posX, data.posY],
-      };
-      dispatch(setGroupParticipants(updatedParticipants));
+      dispatch(
+        setGroupParticipants({
+          id: data.id,
+          coordinates: [data.posX, data.posY],
+        })
+      );
     };
 
     const handleSomeoneMoved = (data) => {
@@ -101,29 +100,31 @@ const Map = () => {
         dispatch(setGroupVideoChatSeatsOccupied(newSeatsOccupied));
       }
 
-      const updatedParticipants = {
-        ...groupParticipants,
-        [data.myId]: [data.posX, data.posY],
-      };
-      dispatch(setGroupParticipants(updatedParticipants));
+      dispatch(
+        setGroupParticipants({
+          id: data.myId,
+          coordinates: [data.posX, data.posY],
+        })
+      );
     };
 
     const handleSomeoneLeftRoom = (data) => {
-      const updatedParticipants = { ...groupParticipants };
-      const [posX, posY] = updatedParticipants[data.userId];
+      const { userId } = data;
+      const [posX, posY] = groupParticipants[userId] || [];
+
       if (belongInsideGroupVideoChairs(posY, posX)) {
         const newSeatsOccupied = groupVideoChatSeatsOccupied.filter(
-          (arr) => !(arr[0] === posY && arr[1] === posX)
+          ([seatX, seatY]) => !(seatX === posY && seatY === posX)
         );
-
         dispatch(setGroupVideoChatSeatsOccupied(newSeatsOccupied));
-
-        //TODO delete from pairs also
       }
 
-      delete updatedParticipants[data.userId];
-
-      dispatch(setGroupParticipants(updatedParticipants));
+      dispatch(
+        setGroupParticipants({
+          id: userId,
+          coordinates: null,
+        })
+      );
     };
 
     socket.on("someone-joined", handleSomeoneJoined);

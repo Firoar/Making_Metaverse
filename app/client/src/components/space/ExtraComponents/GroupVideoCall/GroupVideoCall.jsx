@@ -8,6 +8,10 @@ import {
   testingBro,
 } from "./groupVideoCall.js";
 import { getSocket } from "../../../../services/socketService.js";
+import AudioToggle from "./AudioToggle.jsx";
+import CameraToggle from "./CameraToggle.jsx";
+import EndCall from "./EndCall.jsx";
+import SwitchToScreenShare from "./SwitchToScreenShare.jsx";
 
 const GroupVideoCall = () => {
   const { enteredGroupVideoChat, groupVideoChatSeatsOccupied } = useSelector(
@@ -41,7 +45,10 @@ const GroupVideoCall = () => {
         {}
       </div>
       <div className={classes["groupVideoCall-buttonsDiv"]}>
-        <button className={classes["groupVideoCall-endBtn"]}>End call</button>
+        <AudioToggle />
+        <CameraToggle />
+        <EndCall />
+        <SwitchToScreenShare />
       </div>
     </div>
   );

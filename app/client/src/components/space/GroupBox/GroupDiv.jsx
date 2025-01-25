@@ -4,7 +4,7 @@ import InviteFriendsComponent from "./InviteFriendsComponent";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setSelectedGroup,
-  setGroupParticipants,
+  setAllGroupParticipants,
   setGroupIdToGroupName,
 } from "../../../store/features/groups/groupsSlice.js";
 import {
@@ -17,19 +17,6 @@ import {
 } from "../../../store/features/movement/movementSlice.js";
 import { getSocket } from "../../../services/socketService.js";
 
-export const setGrpPartcipantsAndIdToName = (participants, dispatch) => {
-  const newObj = {};
-  const idToName = {};
-  participants.forEach((p) => {
-    if (p) {
-      newObj[p.id] = p.info;
-      idToName[p.id] = [p.username, p.color];
-    }
-  });
-
-  dispatch(setGroupParticipants(newObj));
-  dispatch(setGroupIdToGroupName(idToName));
-};
 const GroupDiv = ({ group }) => {
   const dispatch = useDispatch();
   const { selectedGroup } = useSelector((state) => state.groups);
@@ -52,7 +39,6 @@ const GroupDiv = ({ group }) => {
 
     const { participants, ...groupData } = group;
 
-    // Dispatch selected group details
     const randomSpawnCoor = randomSpawn();
     dispatch(setPlayerX(randomSpawnCoor[0]));
     dispatch(setPlayerY(randomSpawnCoor[1]));
@@ -68,8 +54,8 @@ const GroupDiv = ({ group }) => {
         idToName[p.id] = [p.username, p.color];
       }
     });
-
-    dispatch(setGroupParticipants(newObj));
+    console.log("olalalala");
+    dispatch(setAllGroupParticipants(newObj));
     dispatch(setGroupIdToGroupName(idToName));
 
     // Join the group

@@ -2,42 +2,6 @@ export const testingStyle = {
   backgroundColor: "green",
 };
 
-export const gridStyle = {
-  1: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: "auto", // ensures it centers vertically
-    marginBottom: "auto", // ensures it centers vertically
-  },
-  2: {
-    display: "grid",
-    gridTemplateColumns: "repeat(2, 480px)", // 2 columns with 48px width
-    gap: "0",
-    marginTop: "auto",
-    marginBottom: "auto", // centers the grid vertically
-    justifyContent: "center", // ensures grid is centered horizontally
-  },
-  3: {
-    display: "grid",
-    gridTemplateColumns: "repeat(2, 480px)", // First row with 2 columns
-    gap: "0",
-    marginTop: "auto",
-    marginBottom: "auto", // centers the grid vertically
-    justifyContent: "center", // ensures grid is centered horizontally
-    gridTemplateRows: "auto", // adjusts the row height automatically
-  },
-  4: {
-    display: "grid",
-    gridTemplateColumns: "repeat(2, 480px) 480px", // 2 columns in the first row, 1 column in the second row
-    gap: "0",
-    marginTop: "auto",
-    marginBottom: "auto", // centers the grid vertically
-    justifyContent: "center", // ensures grid is centered horizontally
-    gridTemplateRows: "auto auto", // 2 rows
-  },
-};
-
 export const displayGrid = {
   display: "flex",
   flexWrap: "wrap",
@@ -66,6 +30,11 @@ export const videoDivCss = {
   width: "480px",
   height: "360px",
   position: "relative",
+};
+
+export const fullScreenCss = {
+  width: "100%",
+  height: "100%",
 };
 
 export const videoEleCss = {
