@@ -19,6 +19,8 @@ const initialState = {
   mapLeft: -6,
   mapTop: -6,
   playerName: "",
+  lastPlayerX: -1,
+  lastPlayerY: -1,
 };
 
 export const movementSlice = createSlice({

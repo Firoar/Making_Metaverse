@@ -8,15 +8,17 @@ import {
   setGroupIdToGroupName,
   setGroupParticipants,
   setGroupVideoChatSeatsOccupied,
+  setPeerVideoChatSeatsOccupied,
 } from "../../../store/features/groups/groupsSlice.js";
 import ParticipantsImage from "./ParticipantsImage/ParticipantsImage.jsx";
 import axios from "axios";
 import { notify } from "../../../utils/toasts.js";
 import {
   belongInsideGroupVideoChairs,
+  belongInsidePeerVideoChairs,
   InGroupVideoChairs,
 } from "../../../utils/AllMaps.js";
-import { UpdateQueue } from "../../../utils/UpdateQueue.js";
+import { someoneLeftGroupVideoCall } from "../ExtraComponents/GroupVideoCall/groupVideoCall.js";
 
 const Map = () => {
   const socket = getSocket(); // Ensure single socket instance
@@ -26,6 +28,7 @@ const Map = () => {
     groupParticipants,
     groupIdToGroupName,
     groupVideoChatSeatsOccupied,
+    peerVideoChatSeatsOccupied,
   } = useSelector((state) => state.groups);
   const { playerX, playerY, mapTop, mapLeft } = useSelector(
     (state) => state.movement
@@ -106,10 +109,18 @@ const Map = () => {
           coordinates: [data.posX, data.posY],
         })
       );
+
+      if (belongInsidePeerVideoChairs(data.posY, data.posX)) {
+        const newSeatsOccupied = [
+          ...peerVideoChatSeatsOccupied,
+          [data.posY, data.posX],
+        ];
+        dispatch(setPeerVideoChatSeatsOccupied(newSeatsOccupied));
+      }
     };
 
     const handleSomeoneLeftRoom = (data) => {
-      const { userId } = data;
+      const { userId, socketId } = data;
       const [posX, posY] = groupParticipants[userId] || [];
 
       if (belongInsideGroupVideoChairs(posY, posX)) {
@@ -125,6 +136,7 @@ const Map = () => {
           coordinates: null,
         })
       );
+      someoneLeftGroupVideoCall({ userId, socketId });
     };
 
     socket.on("someone-joined", handleSomeoneJoined);

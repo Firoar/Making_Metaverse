@@ -25,6 +25,12 @@ export const InGroupVideoChairs = (x, y) => {
   return belongInsideGroupVideoChairs(x, y);
 };
 
+export const belongInsidePeerVideoChairs = (x, y) => {
+  const key = JSON.stringify([x, y]);
+  if (peerVideoChairs.has(key) && peerVideoChairs.get(key) == true) return true;
+  return false;
+};
+
 export const InPeerVideoChairs = (x, y) => {
   const key = JSON.stringify([x, y]);
   if (peerVideoChairs.has(key) && peerVideoChairs.get(key) == true) return true;

@@ -5,6 +5,7 @@ import {
   handleConnInit,
   handleConnPrepare,
   handleSignalingData,
+  someoneLeftGroupVideoCall,
   testingBro,
 } from "./groupVideoCall.js";
 import { getSocket } from "../../../../services/socketService.js";
@@ -25,12 +26,14 @@ const GroupVideoCall = () => {
       socket.on("conn-prepare", handleConnPrepare);
       socket.on("conn-init", handleConnInit); // now the the people who already joined before me send me con -init in response to my conn-prepare
       socket.on("conn-signal", handleSignalingData);
+      socket.on("someone-left-group-video-chat", someoneLeftGroupVideoCall);
       testingBro(groupVideoChatSeatsOccupied);
 
       return () => {
         socket.off("conn-prepare", handleConnPrepare);
         socket.off("conn-init", handleConnPrepare);
         socket.off("conn-signal", handleSignalingData);
+        socket.off("someone-left-group-video-chat", someoneLeftGroupVideoCall);
       };
     }
   }, [enteredGroupVideoChat]);
@@ -41,9 +44,7 @@ const GroupVideoCall = () => {
     <div className={classes["groupVideoCall-div"]}>
       <div
         className={`${classes["groupVideoCall-mainDiv"]} groupVideoCall-mainDiv`}
-      >
-        {}
-      </div>
+      ></div>
       <div className={classes["groupVideoCall-buttonsDiv"]}>
         <AudioToggle />
         <CameraToggle />

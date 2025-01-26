@@ -84,7 +84,7 @@ export const updateUserSocketId = async (
   leaving
 ) => {
   try {
-    let room;
+    let room = null;
     const user = await lookInDbById(id);
     if (!user) {
       throw new Error("User not found => userSocketId");

@@ -4,16 +4,20 @@ import {
   displayGrid,
   hideScrollBar,
   nameSpanCss,
-  testingStyle,
   videoDivCss,
   videoEleCss,
 } from "./jsCss.js";
 import { getSocket } from "../../../../services/socketService.js";
+import {
+  setEnteredGroupVideoChat,
+  setGroupVideoChatSeatsOccupied,
+} from "../../../../store/features/groups/groupsSlice.js";
 
 let localStream;
 let peers = {};
 let streams = [];
 const addedUsers = new Set();
+let toggleFullScreen = null;
 
 const defaultConstraints = {
   audio: true,
@@ -67,7 +71,7 @@ const getLocalPreviewInitRoomConnection = (groupVideoChatSeatsOccupied) => {
             const seatOccupied = groupState.groupVideoChatSeatsOccupied.some(
               (st) => seat[0] === st[1] && seat[1] === st[0]
             );
-            console.log(seatOccupied);
+
             return seatOccupied;
           }
           return false;
@@ -105,14 +109,15 @@ export const showLocalPreview = (stream) => {
 
   Object.assign(div.style, videoDivCss);
 
-  div.addEventListener("click", () => {
-    console.log("clicked");
+  toggleFullScreen = () => {
     if (div.classList.contains("fullScreen")) {
       div.classList.remove("fullScreen");
     } else {
       div.classList.add("fullScreen");
     }
-  });
+  };
+
+  div.addEventListener("click", toggleFullScreen);
   const videoEle = document.createElement("video");
   videoEle.autoplay = true;
   videoEle.muted = false;
@@ -135,10 +140,7 @@ const showOtherPreview = (stream, otherUser) => {
     return;
   }
 
-  console.log("Bro got his stream, wait a sec:", otherUser);
-
   if (addedUsers.has(otherUser[0])) {
-    console.log(`User ${otherUser[0]} is already added.`);
     return;
   }
 
@@ -161,14 +163,15 @@ const showOtherPreview = (stream, otherUser) => {
   span.classList.add("user-name");
   Object.assign(span.style, nameSpanCss);
   Object.assign(div.style, videoDivCss);
-  div.addEventListener("click", () => {
-    console.log("clicked full screen");
+
+  toggleFullScreen = () => {
     if (div.classList.contains("fullScreen")) {
       div.classList.remove("fullScreen");
     } else {
       div.classList.add("fullScreen");
     }
-  });
+  };
+  div.addEventListener("click", toggleFullScreen);
 
   const videoEle = document.createElement("video");
   videoEle.autoplay = true;
@@ -190,12 +193,7 @@ const showOtherPreview = (stream, otherUser) => {
 export const handleConnPrepare = (data) => {
   const socket = getSocket();
   const { connUserSocketId, userId } = data; // both of them are of the person who just joined
-  console.log(
-    "hi-from conn-prepare ",
-    userId,
-    " just joined video call so sent conn-prepare reuqest. Data : ",
-    data
-  );
+
   prepareNewPeerConnection(connUserSocketId, userId, false);
   socket.emit("conn-init", { connUserSocketId: connUserSocketId });
 };
@@ -203,15 +201,19 @@ export const handleConnPrepare = (data) => {
 const prepareNewPeerConnection = (connUserSocketId, userId, isInitiator) => {
   const configuration = getConfiguration();
 
-  peers[connUserSocketId] = new Peer({
-    initiator: isInitiator,
-    config: configuration,
-    stream: localStream,
-  });
+  if (!peers[connUserSocketId] || peers[connUserSocketId].destroyed) {
+    peers[connUserSocketId] = new Peer({
+      initiator: isInitiator,
+      config: configuration,
+      stream: localStream,
+    });
+  }
 
   peers[connUserSocketId].on("stream", (stream) => {
-    addStream(stream, connUserSocketId, userId);
-    streams = [...streams, stream];
+    if (!streams.includes(stream)) {
+      addStream(stream, connUserSocketId, userId);
+      streams = [...streams, stream];
+    }
   });
 
   peers[connUserSocketId].on("signal", (data) => {
@@ -219,18 +221,16 @@ const prepareNewPeerConnection = (connUserSocketId, userId, isInitiator) => {
       signal: data,
       connUserSocketId: connUserSocketId,
     };
-    signalPeerData(signalData);
+    if (signalData.signal && !peers[connUserSocketId].destroyed) {
+      signalPeerData(signalData); // Make sure this function doesn't send signal data twice
+    }
   });
+  peers[connUserSocketId].on("close", () => {});
 };
 
 const addStream = (stream, connUserSocketId, userId) => {
-  console.log("adding stream bro : ", userId);
-
   const groupState = store.getState().groups;
-  console.log(
-    groupState.groupIdToGroupName,
-    groupState.groupIdToGroupName[userId][0]
-  );
+
   const user = groupState.groupIdToGroupName[userId]
     ? groupState.groupIdToGroupName[userId]
     : null;
@@ -250,16 +250,10 @@ const signalPeerData = (signalData) => {
 };
 
 export const handleSignalingData = (data) => {
-  console.log("signaling data bro : ", data, " connected now i guess");
-
   peers[data.connUserSocketId].signal(data.signal);
 };
 
 export const handleConnInit = (data) => {
-  console.log(
-    "bro they reponseded to my conn-pepare by sending me conn-init, see this is ther id and sockey id",
-    data
-  );
   const { connUserSocketId, userId } = data;
 
   prepareNewPeerConnection(connUserSocketId, userId, true);
@@ -277,7 +271,6 @@ export const toggleScreenShare = (
   isScreenSharingActive,
   screenSharingStream
 ) => {
-  console.log(screenSharingStream);
   if (isScreenSharingActive) {
     switchVideoTracks(localStream);
     changeMyStreamToo(localStream);
@@ -314,6 +307,115 @@ const changeMyStreamToo = (stream) => {
       videoEle.onloadedmetadata = () => {
         videoEle.play();
       };
+    }
+  }
+};
+
+const removeFullScreenEventListeners = () => {
+  const groupVideoCallMainDiv = document.querySelector(
+    ".groupVideoCall-mainDiv"
+  );
+
+  while (groupVideoCallMainDiv.firstChild) {
+    const child = groupVideoCallMainDiv.firstChild;
+    if (child.querySelector("video") && toggleFullScreen) {
+      child.removeEventListener("click", toggleFullScreen);
+    }
+    groupVideoCallMainDiv.removeChild(child);
+  }
+};
+
+export const removeGroupVideoChairsOccupied = (userId, me = false) => {
+  const groupState = store.getState().groups;
+  const movementState = store.getState().movement;
+  let seatOccupied;
+  if (me) {
+    seatOccupied = [movementState.playerX, movementState.playerY];
+  } else {
+    seatOccupied = groupState.groupParticipants[userId] || null;
+  }
+
+  if (seatOccupied) {
+    const updatedSeats = groupState.groupVideoChatSeatsOccupied.filter(
+      (seat) => !(seat[0] === seatOccupied[1] && seat[1] === seatOccupied[0])
+    );
+
+    store.dispatch(setGroupVideoChatSeatsOccupied(updatedSeats));
+  }
+};
+
+const removeAllPeersConnection = () => {
+  Object.entries(peers).forEach(([key, value]) => {
+    if (value) {
+      value.destroy();
+    }
+    delete peers[key];
+  });
+  peers = {};
+};
+const removeAllStreams = () => {
+  streams.forEach((stream) => {
+    stream.getTracks().forEach((track) => track.stop());
+  });
+  streams = [];
+};
+
+export const leaveVideoCall = () => {
+  const groupState = store.getState().groups;
+  const socket = getSocket();
+  const movementState = store.getState().movement;
+
+  removeFullScreenEventListeners();
+  removeAllPeersConnection();
+  removeAllStreams();
+
+  removeGroupVideoChairsOccupied(groupState.selectedGroup.myId, true);
+
+  store.dispatch(setEnteredGroupVideoChat(false));
+
+  socket.emit("i-left-group-video-chat", {
+    groupId: groupState.selectedGroup.id,
+    groupName: groupState.selectedGroup.name,
+  });
+
+  addedUsers.clear();
+  localStream = null;
+
+  window.location.reload();
+};
+
+export const someoneLeftGroupVideoCall = (data) => {
+  const { socketId, userId } = data;
+  const groupState = store.getState().groups;
+
+  // make sure to dlete the occupied set too
+  removeGroupVideoChairsOccupied(userId);
+  const userWhoLeft = groupState.groupIdToGroupName[userId];
+
+  if (userWhoLeft) {
+    const div = document.querySelector(`#${userWhoLeft[0]}`);
+
+    if (div) {
+      const videoEle = div.querySelector("video");
+
+      if (div && videoEle) {
+        const tracks = videoEle.srcObject.getTracks();
+        tracks.forEach((track) => track.stop());
+
+        div.removeChild(videoEle);
+        if (toggleFullScreen) {
+          div.removeEventListener("click", toggleFullScreen);
+        }
+
+        div.parentNode.removeChild(div);
+      }
+
+      if (peers[socketId]) {
+        peers[socketId].destroy();
+      }
+      delete peers[socketId];
+
+      addedUsers.delete(userWhoLeft[0]);
     }
   }
 };

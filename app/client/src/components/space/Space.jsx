@@ -13,6 +13,7 @@ import { handleLogout } from "../../utils/importantFunction.js";
 import { ToastContainer } from "react-toastify";
 import AddNewGroup from "./ExtraComponents/AddGroup/AddNewGroup.jsx";
 import GroupVideoCall from "./ExtraComponents/GroupVideoCall/GroupVideoCall.jsx";
+import PeerVideoCall from "./ExtraComponents/PeerVideoCall/PeerVideoCall.jsx";
 
 const Space = () => {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ const Space = () => {
       </div>
       <AddNewGroup />
       <GroupVideoCall />
+      <PeerVideoCall />
       <ToastContainer />
     </div>
   );

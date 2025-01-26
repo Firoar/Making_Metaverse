@@ -171,6 +171,7 @@ const changeEnteredTypingGameArea = () => {
 
 export const checkBoundary = (x, y, valX = 0, valY = 0) => {
   if (x + valX <= 22 && y + valY <= 21) return true;
+  if (x + valX >= 38 && y + valY <= 21) return true;
 
   const val = Matrix[valY + y][valX + x];
 
@@ -197,17 +198,16 @@ export const checkBoundary = (x, y, valX = 0, valY = 0) => {
       alert("You entered competative coding contest area");
       break;
     case 21:
-      // alert("you entered type racing door");
       changeEnteredTypingGameArea();
       break;
     case 518:
-      // alert("you entered group video door");
       changeEnteredGroupVideoChat();
       return true;
       break;
     case 543:
       // alert("you entered peer video door");
       changeEnteredPeerVideoChat();
+      return true;
       break;
     case 229:
       // alert("you entered competative programming contest door");

@@ -76,8 +76,6 @@ io.on("connection", async (socket) => {
   console.log(`User connected : ${socket.id}`);
   await updateUserSocketService(socket, session.passport.user, true);
 
-  console.log(session.passport.user, session.passport);
-
   socket.on("clicked-group", async (data) => {
     await updatedSelectedGroup(socket, data.groupId, session.passport.user);
   });
@@ -151,7 +149,6 @@ io.on("connection", async (socket) => {
     const { myId, groupId, groupName } = data;
 
     const roomName = `${groupId}-${groupName}-${groupId}-group-video-call-room`;
-    console.log(myId, " : was the first person to join ", roomName);
     socket.join(roomName);
   });
 
@@ -160,14 +157,6 @@ io.on("connection", async (socket) => {
       const { myId, groupId, groupName, participantsIds } = data;
 
       const roomName = `${groupId}-${groupName}-${groupId}-group-video-call-room`;
-
-      console.log(
-        myId,
-        " : joined the  room : ",
-        roomName,
-        " and the present particpants are : ",
-        participantsIds
-      );
 
       socket.join(roomName);
 
@@ -179,7 +168,6 @@ io.on("connection", async (socket) => {
         },
       });
 
-      printErrorInGoodWay(allUsersInVideoCall);
       if (!allUsersInVideoCall.length) {
         console.warn(`No users found for participants: ${participantsIds}`);
         return;
@@ -189,7 +177,7 @@ io.on("connection", async (socket) => {
         if (user.socketId) {
           io.to(user.socketId).emit("conn-prepare", {
             connUserSocketId: socket.id,
-            userId: session.passport.user, // Use `myId` from the event data
+            userId: session.passport.user,
           });
         } else {
           console.error(`User ${user.id} has no valid socketId`);
@@ -202,8 +190,6 @@ io.on("connection", async (socket) => {
 
   socket.on("conn-signal", (data) => {
     const { connUserSocketId, signal } = data;
-    printErrorInGoodWay("bro inside conn-singal : ");
-    console.log(data);
 
     const signalingData = {
       signal: signal,
@@ -213,8 +199,6 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("conn-init", async (data) => {
-    printErrorInGoodWay("bro i got data in conn-init : ");
-    console.log(data);
     try {
       const { connUserSocketId } = data;
 
@@ -228,9 +212,18 @@ io.on("connection", async (socket) => {
     }
   });
 
-  socket.on("disconnect", async (reason) => {
-    // printErrorInGoodWay("oooooooooo --- conn --- oooooooooo");
+  socket.on("i-left-group-video-chat", (data) => {
+    const { groupId, groupName } = data;
+    const roomName = `${groupId}-${groupName}-${groupId}-group-video-call-room`;
+    socket.leave(roomName);
 
+    io.to(roomName).emit("someone-left-group-video-chat", {
+      socketId: socket.id,
+      userId: session.passport.user,
+    });
+  });
+
+  socket.on("disconnect", async (reason) => {
     console.log(`User disconnected : ${socket.id} successfully : ${reason}`);
     const groupId = await updateUserSocketService(
       socket,
@@ -239,14 +232,14 @@ io.on("connection", async (socket) => {
       true
     );
 
-    const room = await giveRoomName(socket, groupId);
+    if (groupId) {
+      const room = await giveRoomName(socket, groupId);
 
-    // also make sure to notify people in video group if he was present
-
-    // printErrorInGoodWay(room);
-    io.to(room).emit("someone-left-room", {
-      userId: session.passport.user,
-    });
+      io.to(room).emit("someone-left-room", {
+        userId: session.passport.user,
+        socketId: socket.id,
+      });
+    }
   });
 });
 
