@@ -128,3 +128,8 @@ export const giveGroupName = async (groupId) => {
     throw error;
   }
 };
+
+export const giveMePeerRoomName = (groupId, groupName, tableId) => {
+  const room = `${groupId}-${groupName}-${groupId}-peer-table-${tableId}`;
+  return room;
+};

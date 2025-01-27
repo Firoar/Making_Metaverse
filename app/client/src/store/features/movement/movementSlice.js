@@ -51,6 +51,12 @@ export const movementSlice = createSlice({
     setPlayerName: (state, action) => {
       state.playerName = action.payload;
     },
+    setLastPlayerX: (state, action) => {
+      state.lastPlayerX = action.payload;
+    },
+    setLastPlayerY: (state, action) => {
+      state.lastPlayerY = action.payload;
+    },
     logout: () => {
       return initialState;
     },
@@ -66,6 +72,8 @@ export const {
   setPlayerY,
   setPlayerColor,
   setPlayerName,
+  setLastPlayerX,
+  setLastPlayerY,
   logout,
 } = movementSlice.actions;
 export default movementSlice.reducer;

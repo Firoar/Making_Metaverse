@@ -31,7 +31,7 @@ const GroupVideoCall = () => {
 
       return () => {
         socket.off("conn-prepare", handleConnPrepare);
-        socket.off("conn-init", handleConnPrepare);
+        socket.off("conn-init", handleConnInit);
         socket.off("conn-signal", handleSignalingData);
         socket.off("someone-left-group-video-chat", someoneLeftGroupVideoCall);
       };

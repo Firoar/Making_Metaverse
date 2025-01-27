@@ -15,6 +15,8 @@ import {
 } from "../store/features/groups/groupsSlice.js";
 import { getSocket } from "../services/socketService.js";
 import {
+  setLastPlayerX,
+  setLastPlayerY,
   setPlayerX,
   setPlayerY,
 } from "../store/features/movement/movementSlice.js";
@@ -205,7 +207,8 @@ export const checkBoundary = (x, y, valX = 0, valY = 0) => {
       return true;
       break;
     case 543:
-      // alert("you entered peer video door");
+      store.dispatch(setLastPlayerX(x));
+      store.dispatch(setLastPlayerY(y));
       changeEnteredPeerVideoChat();
       return true;
       break;

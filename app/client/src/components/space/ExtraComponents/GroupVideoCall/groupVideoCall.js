@@ -26,7 +26,7 @@ const defaultConstraints = {
     height: "360",
   },
 };
-const getConfiguration = () => {
+export const getConfiguration = () => {
   return {
     iceServers: [
       {

@@ -17,7 +17,7 @@ import {
 import { printErrorInGoodWay } from "./utils/printErrors.js";
 import { User } from "./models/User.js";
 import { Op } from "sequelize";
-import { lookInDbById } from "./utils/db/allDbCalls.js";
+import { giveMePeerRoomName, lookInDbById } from "./utils/db/allDbCalls.js";
 
 await syncTheDb();
 
@@ -221,6 +221,45 @@ io.on("connection", async (socket) => {
       socketId: socket.id,
       userId: session.passport.user,
     });
+  });
+
+  socket.on("create-peer-video-room", (data) => {
+    const { groupId, groupName, userId, tableId } = data;
+    socket.join(giveMePeerRoomName(groupId, groupName, tableId));
+  });
+  socket.on("join-peer-video-room", (data) => {
+    const { groupId, groupName, userId, tableId } = data;
+
+    const roomName = giveMePeerRoomName(groupId, groupName, tableId);
+    socket.join(roomName);
+
+    socket.to(roomName).emit("peer-conn-prepare", {
+      peerRoomSocketId: roomName,
+      peerUserId: session.passport.user,
+    });
+  });
+
+  socket.on("peer-conn-init", (data) => {
+    const { peerRoomSocketId } = data;
+    socket.to(peerRoomSocketId).emit("peer-conn-init", {
+      peerRoomSocketId: peerRoomSocketId,
+      peerUserId: session.passport.user,
+    });
+  });
+
+  socket.on("peer-conn-signal", (data) => {
+    socket
+      .to(data.peerRoomSocketId)
+      .emit("peer-conn-signal", { signal: data.signal });
+  });
+
+  socket.on("i-ended-peer-call", (data) => {
+    const { groupId, groupName, userId, tableId } = data;
+    socket
+      .to(giveMePeerRoomName(groupId, groupName, tableId))
+      .emit("someone-left-peer-call", {
+        userId: session.passport.user,
+      });
   });
 
   socket.on("disconnect", async (reason) => {

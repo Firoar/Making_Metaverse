@@ -8,6 +8,7 @@ import {
   setGroupIdToGroupName,
   setGroupParticipants,
   setGroupVideoChatSeatsOccupied,
+  setPeerDisconnected,
   setPeerVideoChatSeatsOccupied,
 } from "../../../store/features/groups/groupsSlice.js";
 import ParticipantsImage from "./ParticipantsImage/ParticipantsImage.jsx";
@@ -92,6 +93,13 @@ const Map = () => {
           coordinates: [data.posX, data.posY],
         })
       );
+      if (belongInsidePeerVideoChairs(data.posY, data.posX)) {
+        const newSeatsOccupied = [
+          ...peerVideoChatSeatsOccupied,
+          [data.posY, data.posX],
+        ];
+        dispatch(setPeerVideoChatSeatsOccupied(newSeatsOccupied));
+      }
     };
 
     const handleSomeoneMoved = (data) => {
@@ -128,6 +136,14 @@ const Map = () => {
           ([seatX, seatY]) => !(seatX === posY && seatY === posX)
         );
         dispatch(setGroupVideoChatSeatsOccupied(newSeatsOccupied));
+      }
+
+      if (belongInsidePeerVideoChairs(posY, posX)) {
+        const newSeatsOccupied = peerVideoChatSeatsOccupied.filter(
+          ([seatX, seatY]) => !(seatX === posY && seatY === posX)
+        );
+        dispatch(setGroupVideoChatSeatsOccupied(newSeatsOccupied));
+        dispatch(setPeerDisconnected(true));
       }
 
       dispatch(

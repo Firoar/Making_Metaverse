@@ -25,7 +25,7 @@ const ColorBall = (props) => {
   );
 };
 
-const Table = ({ table, setSelectedSeat }) => {
+const Table = ({ table, setSelectedSeat, setSelectedTable }) => {
   const { peerVideoChatSeatsOccupied, selectedGroup } = useSelector(
     (state) => state.groups
   );
@@ -49,17 +49,27 @@ const Table = ({ table, setSelectedSeat }) => {
   };
 
   const handleClicked = () => {
+    const details = {
+      id: table.id,
+      members: null,
+    };
+    if (!table.right.isOccupied && !table.left.isOccupied) {
+      details.members = 1;
+    } else if (
+      (!table.right.isOccupied && table.right.isOccupied) ||
+      (table.right.isOccupied && !table.right.isOccupied)
+    ) {
+      details.members = 2;
+    }
     if (!table.left.isOccupied) {
       handleSeatClick(table.left.seat);
     } else if (!table.right.isOccupied) {
       handleSeatClick(table.right.seat);
     }
-    setSelectedSeat(true);
-  };
 
-  useEffect(() => {
-    console.log(table);
-  }, []);
+    setSelectedSeat(true);
+    setSelectedTable(details);
+  };
 
   return (
     <div

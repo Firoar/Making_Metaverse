@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Table from "./Table";
 
-const SelectSeat = ({ setSelectedSeat }) => {
+const SelectSeat = ({ setSelectedSeat, setSelectedTable }) => {
   const { peerVideoChatSeatsOccupied, groupParticipants, groupIdToGroupName } =
     useSelector((state) => state.groups);
 
@@ -71,7 +71,12 @@ const SelectSeat = ({ setSelectedSeat }) => {
   return (
     <div>
       {Object.entries(tables).map(([key, table]) => (
-        <Table key={key} table={table} setSelectedSeat={setSelectedSeat} />
+        <Table
+          key={key}
+          table={table}
+          setSelectedSeat={setSelectedSeat}
+          setSelectedTable={setSelectedTable}
+        />
       ))}
     </div>
   );

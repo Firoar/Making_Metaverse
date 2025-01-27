@@ -24,8 +24,6 @@ const GroupDiv = ({ group }) => {
   const socket = getSocket();
 
   const handleJoinGroup = async () => {
-    console.log("joining......................");
-
     socket.emit("join-group", {
       groupId: group.id,
       groupName: group.name,
@@ -54,7 +52,6 @@ const GroupDiv = ({ group }) => {
         idToName[p.id] = [p.username, p.color];
       }
     });
-    console.log("olalalala");
     dispatch(setAllGroupParticipants(newObj));
     dispatch(setGroupIdToGroupName(idToName));
 
