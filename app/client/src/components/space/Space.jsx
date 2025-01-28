@@ -14,6 +14,7 @@ import { ToastContainer } from "react-toastify";
 import AddNewGroup from "./ExtraComponents/AddGroup/AddNewGroup.jsx";
 import GroupVideoCall from "./ExtraComponents/GroupVideoCall/GroupVideoCall.jsx";
 import PeerVideoCall from "./ExtraComponents/PeerVideoCall/PeerVideoCall.jsx";
+import GameArea from "./ExtraComponents/GameArea/GameArea.jsx";
 
 const Space = () => {
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ const Space = () => {
       <AddNewGroup />
       <GroupVideoCall />
       <PeerVideoCall />
+      <GameArea />
       <ToastContainer />
     </div>
   );

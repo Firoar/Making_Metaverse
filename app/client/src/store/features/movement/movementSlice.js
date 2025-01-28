@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AreaIndex } from "../../../assets/finalMatrixValue.js";
 
-export const randomSpawn = () => {
-  const length = AreaIndex.spawnarea.length;
+export const randomSpawn = (val = "spawnarea") => {
+  const length = AreaIndex[val].length;
+
   const randomIndex = Math.floor(Math.random() * length);
-  let [x, y] = AreaIndex.spawnarea[randomIndex];
+  let [x, y] = AreaIndex[val][randomIndex];
   return [y, x];
 };
 

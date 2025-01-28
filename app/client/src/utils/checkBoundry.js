@@ -15,6 +15,7 @@ import {
 } from "../store/features/groups/groupsSlice.js";
 import { getSocket } from "../services/socketService.js";
 import {
+  randomSpawn,
   setLastPlayerX,
   setLastPlayerY,
   setPlayerX,
@@ -168,7 +169,20 @@ const changeEnteredLeetcodeArea = () => {
 };
 
 const changeEnteredTypingGameArea = () => {
+  const state = store.getState();
+  const socket = getSocket();
+  const [x, y] = randomSpawn("contestarea");
+  store.dispatch(setPlayerX(x));
+  store.dispatch(setPlayerY(y));
   store.dispatch(setEnteredTypingGameArea(true));
+
+  const data = {
+    groupId: state.groups.selectedGroup.id,
+    groupName: state.groups.selectedGroup.name,
+    posX: x,
+    posY: y,
+  };
+  socket.emit("i-moved", data);
 };
 
 export const checkBoundary = (x, y, valX = 0, valY = 0) => {
@@ -200,7 +214,10 @@ export const checkBoundary = (x, y, valX = 0, valY = 0) => {
       alert("You entered competative coding contest area");
       break;
     case 21:
+      store.dispatch(setLastPlayerX(x));
+      store.dispatch(setLastPlayerY(y));
       changeEnteredTypingGameArea();
+      return true;
       break;
     case 518:
       changeEnteredGroupVideoChat();
@@ -213,11 +230,10 @@ export const checkBoundary = (x, y, valX = 0, valY = 0) => {
       return true;
       break;
     case 229:
-      // alert("you entered competative programming contest door");
       changeEnteredLeetcodeArea();
       break;
     case 18:
-      alert("you entered typing contest area!");
+      return true;
       break;
     default:
       break;
