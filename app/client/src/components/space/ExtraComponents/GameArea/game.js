@@ -1,10 +1,12 @@
 import { generate } from "random-words";
 
-let GAMEOVER = false;
 const CANVASWIDTH = 700;
 const CANVASHEIGHT = 796;
 let YSPEED = 1;
 let SCORE = 0;
+let intervalId;
+let typingHandler;
+const SPAWN = 3000;
 
 const giveMeImage = (src) => {
   const img = new Image();
@@ -67,13 +69,17 @@ const giveMeAWord = () => {
   return randomWord[0];
 };
 
-export const startGamefn = () => {
+export const startGamefn = (handleGameEndedfn) => {
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
-      gameLogic();
+      LIVES.lives = 5;
+      SCORE = 0;
+      gameLogic(handleGameEndedfn);
     });
   } else {
-    gameLogic();
+    LIVES.lives = 5;
+    SCORE = 0;
+    gameLogic(handleGameEndedfn);
   }
 };
 
@@ -256,42 +262,6 @@ const increaseInd = () => {
   }
 };
 
-const gameLogic = () => {
-  const mainGameArea = document.querySelector(".gameArea-main");
-  const canvas = mainGameArea.querySelector("canvas");
-
-  canvas.width = CANVASWIDTH;
-  canvas.height = CANVASHEIGHT;
-
-  const c = canvas.getContext("2d");
-  animate(c);
-
-  setInterval(() => {
-    pushOneNewWord();
-  }, 3000);
-
-  addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      GAMEOVER = true;
-    } else if (wordBlocks.length && event.key === currentLetter()) {
-      increaseInd();
-    }
-  });
-};
-
-const drawGameOverBoard = (c) => {
-  c.fillStyle = "white";
-  c.fillRect(0, 0, CANVASWIDTH, CANVASHEIGHT);
-  c.drawImage(Galaxy, 0, 0, CANVASWIDTH, CANVASHEIGHT);
-  c.font = "50px Arial";
-  c.fillStyle = "red";
-  c.fillText(`GAME OVER`, CANVASWIDTH / 2 - 150, CANVASHEIGHT / 2 - 150);
-
-  c.font = "30px Arial";
-  c.fillStyle = "white";
-  c.fillText(`Score : ${SCORE}`, CANVASWIDTH / 2 - 100, CANVASHEIGHT / 2 - 100);
-};
-
 const detectBulletWordBlockClash = () => {
   if (bullets.length <= 0 || wordBlocks.length <= 0) return;
   const bullet = bullets[0];
@@ -329,12 +299,63 @@ const detectWordBlockShooterClash = () => {
   }
 };
 
-const animate = (c) => {
-  if (GAMEOVER) {
-    drawGameOverBoard(c);
+const drawGameOverBoard = (c, handleGameEndedfn) => {
+  c.fillStyle = "white";
+  c.fillRect(0, 0, CANVASWIDTH, CANVASHEIGHT);
+  c.drawImage(Galaxy, 0, 0, CANVASWIDTH, CANVASHEIGHT);
+  c.font = "50px Arial";
+  c.fillStyle = "red";
+  c.fillText(`GAME OVER`, CANVASWIDTH / 2 - 150, CANVASHEIGHT / 2 - 150);
+
+  c.font = "30px Arial";
+  c.fillStyle = "white";
+  c.fillText(`Score : ${SCORE}`, CANVASWIDTH / 2 - 100, CANVASHEIGHT / 2 - 100);
+  handleGameEndedfn(SCORE);
+};
+
+const gameLogic = (handleGameEndedfn) => {
+  const mainGameArea = document.querySelector(".gameArea-main");
+  const canvas = mainGameArea.querySelector("canvas");
+
+  canvas.width = CANVASWIDTH;
+  canvas.height = CANVASHEIGHT;
+
+  const c = canvas.getContext("2d");
+  animate(c, handleGameEndedfn);
+
+  if (intervalId) clearInterval(intervalId);
+  intervalId = setInterval(() => {
+    pushOneNewWord();
+  }, SPAWN);
+
+  if (typingHandler) window.removeEventListener("keydown", typingHandler);
+  typingHandler = (event) => {
+    if (wordBlocks.length && event.key === currentLetter()) {
+      increaseInd();
+    }
+  };
+
+  window.addEventListener("keydown", typingHandler);
+};
+
+const stopGame = () => {
+  if (intervalId) clearInterval(intervalId);
+  if (typingHandler) {
+    console.log("removing typingHandler");
+    window.removeEventListener("keydown", typingHandler);
+  }
+  wordBlocks.length = 0;
+  blasts.length = 0;
+  bullets.length = 0;
+};
+
+const animate = (c, handleGameEndedfn) => {
+  if (LIVES.lives <= 0) {
+    stopGame();
+    drawGameOverBoard(c, handleGameEndedfn);
     return;
   }
-  requestAnimationFrame(() => animate(c));
+  requestAnimationFrame(() => animate(c, handleGameEndedfn));
   c.fillStyle = "white";
   c.fillRect(0, 0, CANVASWIDTH, CANVASHEIGHT);
   c.drawImage(Galaxy, 0, 0, CANVASWIDTH, CANVASHEIGHT);
@@ -354,8 +375,4 @@ const animate = (c) => {
   blasts = blasts.filter((blast) => blast.countDown < 20);
   detectBulletWordBlockClash();
   detectWordBlockShooterClash();
-
-  if (LIVES.lives <= 0) {
-    GAMEOVER = true;
-  }
 };

@@ -139,6 +139,32 @@ export const createNewGroup = async (req, res) => {
   }
 };
 
+export const getTypingLeaderBoard = async (req, res) => {
+  try {
+    const { groupId } = req.query;
+    const group = await Group.findByPk(groupId);
+    if (!group) {
+      return send404ErrorResponse(nul, res, "Group doesnt exist");
+    }
+    const usersOfGroup = await group.getUsers();
+    const particpantsTypingSpeed = await usersOfGroup.map((u) => ({
+      username: u.username,
+      typingSpeed: u.typingSpeed,
+    }));
+
+    return res.status(200).json({
+      ok: true,
+      particpantsTypingSpeed: particpantsTypingSpeed,
+    });
+  } catch (error) {
+    return send500ErrorResponse(
+      error,
+      res,
+      "Error while fetching typing scoreboard"
+    );
+  }
+};
+
 export const getAllUserGroups = async (req, res) => {
   try {
     const user = await lookInDbById(req.user.id);
@@ -465,4 +491,42 @@ export const getTodaysJoke = async (req, res) => {
       },
     });
   } catch (error) {}
+};
+
+export const updateMyTypingSpeed = async (req, res) => {
+  try {
+    const { userId, score } = req.body;
+
+    if (!userId || typeof score !== "number") {
+      return res.status(400).json({
+        ok: false,
+        message: "Invalid request: userId and score are required",
+      });
+    }
+
+    const user = await lookInDbById(userId);
+    if (!user) {
+      return send404ErrorResponse(
+        null,
+        res,
+        `Did not find a user with this userId: ${userId}`
+      );
+    }
+
+    if (user.typingSpeed === null || user.typingSpeed < score) {
+      user.typingSpeed = score;
+      await user.save();
+    }
+    return res.status(200).json({
+      ok: true,
+      message: "Typing speed updated successfully",
+      user: user,
+    });
+  } catch (error) {
+    return send500ErrorResponse(
+      error,
+      res,
+      "There was an error while updating typing speed"
+    );
+  }
 };

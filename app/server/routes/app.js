@@ -9,9 +9,11 @@ import {
   getIsUserNewContoller,
   getTodaysJoke,
   getTodaysQuote,
+  getTypingLeaderBoard,
   isGroupNameNew,
   joinGroup,
   sendChatToGroup,
+  updateMyTypingSpeed,
 } from "../controllers/appController.js";
 
 const router = express.Router();
@@ -58,6 +60,14 @@ router.get("/get-todays-quote", isAuth, async (req, res) => {
 
 router.get("/get-todays-joke", isAuth, async (req, res) => {
   await getTodaysJoke(req, res);
+});
+
+router.get("/get-typing-leaderboard", isAuth, async (req, res) => {
+  await getTypingLeaderBoard(req, res);
+});
+
+router.put("/update-my-typing-speed", isAuth, async (req, res) => {
+  updateMyTypingSpeed(req, res);
 });
 
 export default router;

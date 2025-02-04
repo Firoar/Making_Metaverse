@@ -17,6 +17,8 @@ const initialState = {
   typingAreaSeatsOccupied: [],
   peers: {},
   peerDisconnected: false,
+  showTypingLeaderBoard: false,
+  // typingLeaderBoard:{}
 };
 
 const groupsSlice = createSlice({
@@ -77,7 +79,9 @@ const groupsSlice = createSlice({
     setPeerDisconnected: (state, action) => {
       state.peerDisconnected = action.payload;
     },
-
+    setShowTypingLeaderBoard: (state, action) => {
+      state.showTypingLeaderBoard = action.payload;
+    },
     logout: () => {
       return initialState;
     },
@@ -101,6 +105,7 @@ export const {
   setLeetCodeAreaSeatsOccupied,
   setPeerVideoChatSeatsOccupied,
   setPeerDisconnected,
+  setShowTypingLeaderBoard,
   logout,
 } = groupsSlice.actions;
 

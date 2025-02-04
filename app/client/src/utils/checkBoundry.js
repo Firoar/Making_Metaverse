@@ -12,6 +12,7 @@ import {
   setEnteredPeerVideoChat,
   setEnteredTypingGameArea,
   setGroupVideoChatSeatsOccupied,
+  setShowTypingLeaderBoard,
 } from "../store/features/groups/groupsSlice.js";
 import { getSocket } from "../services/socketService.js";
 import {
@@ -185,6 +186,35 @@ const changeEnteredTypingGameArea = () => {
   socket.emit("i-moved", data);
 };
 
+const showTypingLeaderBoard = () => {
+  store.dispatch(setShowTypingLeaderBoard(true));
+};
+
+const getTypingScoreBoard = () => {
+  const currentTime = new Date().getTime();
+
+  const storedScoreBoard = JSON.parse(
+    localStorage.getItem("typing-speed-scoreboard")
+  );
+
+  if (storedScoreBoard) {
+    if (currentTime - storedScoreBoard.lastFetched > 1000 * 2 * 60) {
+      showTypingLeaderBoard();
+      storedScoreBoard.lastFetched = currentTime;
+      localStorage.setItem(
+        "typing-speed-scoreboard",
+        JSON.stringify(storedScoreBoard)
+      );
+    }
+  } else {
+    showTypingLeaderBoard();
+    const newObj = {
+      lastFetched: currentTime,
+    };
+    localStorage.setItem("typing-speed-scoreboard", JSON.stringify(newObj));
+  }
+};
+
 export const checkBoundary = (x, y, valX = 0, valY = 0) => {
   if (x + valX <= 22 && y + valY <= 21) return true;
   if (x + valX >= 38 && y + valY <= 21) return true;
@@ -197,7 +227,8 @@ export const checkBoundary = (x, y, valX = 0, valY = 0) => {
     case 537:
       return true;
     case 519:
-      alert("this is typing race leaderboard");
+      // alert("this is typing race leaderboard");
+      getTypingScoreBoard();
       break;
     case 586:
       // alert("This spwans random joke");
@@ -234,7 +265,6 @@ export const checkBoundary = (x, y, valX = 0, valY = 0) => {
       break;
     case 18:
       return true;
-      break;
     default:
       break;
   }

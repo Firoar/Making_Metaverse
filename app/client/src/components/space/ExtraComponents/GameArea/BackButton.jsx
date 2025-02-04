@@ -11,7 +11,7 @@ import {
 } from "../../../../store/features/movement/movementSlice";
 import { getSocket } from "../../../../services/socketService";
 
-const BackButton = () => {
+const BackButton = ({ setStartGame }) => {
   const { lastPlayerX, lastPlayerY } = useSelector((state) => state.movement);
   const { selectedGroup } = useSelector((state) => state.groups);
   const dispatch = useDispatch();
@@ -29,6 +29,7 @@ const BackButton = () => {
       posY: lastPlayerY,
     };
     socket.emit("i-moved", data);
+    setStartGame(false);
   };
 
   return (

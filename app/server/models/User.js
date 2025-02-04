@@ -40,4 +40,13 @@ export const User = sequelize.define("user", {
     allowNull: true,
     defaultValue: null,
   },
+  typingSpeed: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  codingStreak: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
 });

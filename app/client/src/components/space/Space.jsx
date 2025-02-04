@@ -15,6 +15,8 @@ import AddNewGroup from "./ExtraComponents/AddGroup/AddNewGroup.jsx";
 import GroupVideoCall from "./ExtraComponents/GroupVideoCall/GroupVideoCall.jsx";
 import PeerVideoCall from "./ExtraComponents/PeerVideoCall/PeerVideoCall.jsx";
 import GameArea from "./ExtraComponents/GameArea/GameArea.jsx";
+import TypingLeaderBoard from "./ExtraComponents/TypingLeaderBoard/TypingLeaderBoard.jsx";
+import CodingContest from "./ExtraComponents/CodingContest/CodingContest.jsx";
 
 const Space = () => {
   const navigate = useNavigate();
@@ -46,6 +48,8 @@ const Space = () => {
       <GroupVideoCall />
       <PeerVideoCall />
       <GameArea />
+      <TypingLeaderBoard />
+      <CodingContest />
       <ToastContainer />
     </div>
   );

@@ -11,7 +11,7 @@ const Navbar = () => {
 
   return (
     <div className={classes["space-navbar"]}>
-      <h1>MetaVerse</h1>
+      <h1>PixelVerse</h1>
 
       <div className={classes["space-navbar-button-div"]}>
         <button onClick={() => handleLogout(navigate, dispatch)}>
