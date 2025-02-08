@@ -22,6 +22,7 @@ const initialState = {
   playerName: "",
   lastPlayerX: -1,
   lastPlayerY: -1,
+  playerLeetcodeUsername: "",
 };
 
 export const movementSlice = createSlice({
@@ -58,6 +59,9 @@ export const movementSlice = createSlice({
     setLastPlayerY: (state, action) => {
       state.lastPlayerY = action.payload;
     },
+    setPlayerLeetcodeUsername: (state, action) => {
+      state.playerLeetcodeUsername = action.payload;
+    },
     logout: () => {
       return initialState;
     },
@@ -75,6 +79,7 @@ export const {
   setPlayerName,
   setLastPlayerX,
   setLastPlayerY,
+  setPlayerLeetcodeUsername,
   logout,
 } = movementSlice.actions;
 export default movementSlice.reducer;

@@ -3,7 +3,6 @@ import {
   signInController,
   signUpController,
 } from "../controllers/authControllers.js";
-import { printErrorInGoodWay } from "../utils/printErrors.js";
 import {
   send401ErrorResponse,
   send500ErrorResponse,

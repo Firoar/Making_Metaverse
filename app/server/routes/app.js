@@ -1,12 +1,14 @@
 import express from "express";
 import { isAuth } from "../middleware/middleware.js";
 import {
+  changeUserLeetcodeName,
   createNewGroup,
   getAllUserGroups,
   getGroupChats,
   getGroupInviteCode,
   getIdToNameAndColor,
   getIsUserNewContoller,
+  getLeetCodeUserName,
   getTodaysJoke,
   getTodaysQuote,
   getTypingLeaderBoard,
@@ -68,6 +70,18 @@ router.get("/get-typing-leaderboard", isAuth, async (req, res) => {
 
 router.put("/update-my-typing-speed", isAuth, async (req, res) => {
   updateMyTypingSpeed(req, res);
+});
+
+router.get(
+  "/get-all-groups-user-leetcodeUsername",
+  isAuth,
+  async (req, res) => {
+    getLeetCodeUserName(req, res);
+  }
+);
+
+router.put("/change-his-leetcode-username", isAuth, async (req, res) => {
+  await changeUserLeetcodeName(req, res);
 });
 
 export default router;

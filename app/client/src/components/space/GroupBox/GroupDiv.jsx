@@ -8,6 +8,7 @@ import {
   setGroupIdToGroupName,
 } from "../../../store/features/groups/groupsSlice.js";
 import {
+  setPlayerLeetcodeUsername,
   setPlayerX,
   setPlayerY,
 } from "../../../store/features/movement/movementSlice.js";
@@ -20,6 +21,7 @@ import { getSocket } from "../../../services/socketService.js";
 const GroupDiv = ({ group }) => {
   const dispatch = useDispatch();
   const { selectedGroup } = useSelector((state) => state.groups);
+  const { playerLeetcodeUsername } = useSelector((state) => state.movement);
 
   const socket = getSocket();
 
@@ -35,7 +37,7 @@ const GroupDiv = ({ group }) => {
       groupId: group.id,
     });
 
-    const { participants, ...groupData } = group;
+    const { participants, myLeetCodeUsername, ...groupData } = group;
 
     const randomSpawnCoor = randomSpawn();
     dispatch(setPlayerX(randomSpawnCoor[0]));
@@ -43,6 +45,9 @@ const GroupDiv = ({ group }) => {
 
     dispatch(setSelectedGroup(groupData));
     dispatch(setPlayerName(group.myName));
+    if (playerLeetcodeUsername === "" && myLeetCodeUsername !== null) {
+      dispatch(setPlayerLeetcodeUsername(myLeetCodeUsername));
+    }
 
     const newObj = {};
     const idToName = {};

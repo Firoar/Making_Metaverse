@@ -188,8 +188,6 @@ export const getAllUserGroups = async (req, res) => {
             info: null,
           }));
 
-        // printErrorInGoodWay(participants);
-
         return {
           id: group.id,
           mapId: group.mapId,
@@ -199,6 +197,7 @@ export const getAllUserGroups = async (req, res) => {
           myCharColor: group.user_group.charColor,
           myId: group.user_group.userId,
           myName: req.user.username,
+          myLeetCodeUsername: user.leetCodeUsername,
           participants: participants,
         };
       })
@@ -527,6 +526,63 @@ export const updateMyTypingSpeed = async (req, res) => {
       error,
       res,
       "There was an error while updating typing speed"
+    );
+  }
+};
+
+export const getLeetCodeUserName = async (req, res) => {
+  try {
+    const { groupId } = req.query;
+    const group = await Group.findByPk(groupId);
+
+    if (!group) {
+      return send404ErrorResponse(null, res, "Group not found.");
+    }
+
+    const usersOfGrp = await group.getUsers();
+    const participantsLeetCodeUserNames = usersOfGrp.map((u) => ({
+      id: u.id,
+      username: u.username,
+      leetCodeUsername: u.leetCodeUsername ?? null,
+    }));
+
+    return res.status(200).json({
+      ok: true,
+      participantsLeetCodeUserNames: participantsLeetCodeUserNames,
+    });
+  } catch (error) {
+    return send500ErrorResponse(
+      error,
+      res,
+      "Couldnt get group's leetcode usernames"
+    );
+  }
+};
+
+export const changeUserLeetcodeName = async (req, res) => {
+  try {
+    const { username } = req.body;
+
+    if (!username) {
+      return send400ErrorResponse(null, res, "Invalid username");
+    }
+
+    const user = await lookInDbById(req.user.id);
+    if (!user) {
+      return send404ErrorResponse(null, res, "User not found");
+    }
+
+    user.leetCodeUsername = username;
+    await user.save();
+
+    return res.status(200).json({
+      ok: true,
+    });
+  } catch (error) {
+    return send500ErrorResponse(
+      error,
+      res,
+      "couldnt change user leetcode username"
     );
   }
 };

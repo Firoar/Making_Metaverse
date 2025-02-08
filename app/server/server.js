@@ -18,6 +18,7 @@ import { printErrorInGoodWay } from "./utils/printErrors.js";
 import { User } from "./models/User.js";
 import { Op } from "sequelize";
 import { giveMePeerRoomName, lookInDbById } from "./utils/db/allDbCalls.js";
+import { incomingRequest } from "./middleware/middleware.js";
 
 await syncTheDb();
 
@@ -49,6 +50,7 @@ app.use(sessionMiddleware);
 app.use(cors(corsOptions));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(incomingRequest);
 
 // router
 app.use("/api/auth", authRouter);

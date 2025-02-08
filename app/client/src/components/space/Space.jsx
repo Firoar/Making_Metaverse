@@ -17,6 +17,7 @@ import PeerVideoCall from "./ExtraComponents/PeerVideoCall/PeerVideoCall.jsx";
 import GameArea from "./ExtraComponents/GameArea/GameArea.jsx";
 import TypingLeaderBoard from "./ExtraComponents/TypingLeaderBoard/TypingLeaderBoard.jsx";
 import CodingContest from "./ExtraComponents/CodingContest/CodingContest.jsx";
+import ContestLeaderBoard from "./ExtraComponents/ContestLeaderBoard/ContestLeaderBoard.jsx";
 
 const Space = () => {
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ const Space = () => {
       <GameArea />
       <TypingLeaderBoard />
       <CodingContest />
+      <ContestLeaderBoard />
       <ToastContainer />
     </div>
   );

@@ -18,7 +18,8 @@ const initialState = {
   peers: {},
   peerDisconnected: false,
   showTypingLeaderBoard: false,
-  // typingLeaderBoard:{}
+  showContestLeaderBoard: false,
+  groupUserLeetCodeUserName: {},
 };
 
 const groupsSlice = createSlice({
@@ -82,6 +83,13 @@ const groupsSlice = createSlice({
     setShowTypingLeaderBoard: (state, action) => {
       state.showTypingLeaderBoard = action.payload;
     },
+    setShowContestLeaderBoard: (state, action) => {
+      state.showContestLeaderBoard = action.payload;
+    },
+    setGroupUserLeetCodeUserName: (state, action) => {
+      state.groupUserLeetCodeUserName = action.payload;
+    },
+
     logout: () => {
       return initialState;
     },
@@ -106,6 +114,8 @@ export const {
   setPeerVideoChatSeatsOccupied,
   setPeerDisconnected,
   setShowTypingLeaderBoard,
+  setShowContestLeaderBoard,
+  setGroupUserLeetCodeUserName,
   logout,
 } = groupsSlice.actions;
 

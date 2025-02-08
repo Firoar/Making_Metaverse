@@ -1,0 +1,78 @@
+.contestLeaderBoard-div {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  outline: solid 1px rgb(255, 255, 255);
+
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: white;
+
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.contestLeaderBoard-main {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+}
+
+.backButton-div {
+  width: 80px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background-color: black;
+  color: white;
+  font-size: large;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.full-leaderboard {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 25px;
+  width: 300px;
+  height: 500px;
+  outline: solid green 1px;
+  background-color: whitesmoke;
+  color: black;
+
+  overflow: scroll;
+  scrollbar-width: none;
+}
+.full-leaderboard::-webkit-scrollbar {
+  display: none;
+}
+
+.full-leaderboard-title,
+.full-leaderboard-points {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}

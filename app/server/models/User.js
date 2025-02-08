@@ -44,9 +44,8 @@ export const User = sequelize.define("user", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  codingStreak: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: 0,
+  leetCodeUsername: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
 });

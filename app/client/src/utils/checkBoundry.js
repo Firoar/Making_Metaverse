@@ -12,6 +12,7 @@ import {
   setEnteredPeerVideoChat,
   setEnteredTypingGameArea,
   setGroupVideoChatSeatsOccupied,
+  setShowContestLeaderBoard,
   setShowTypingLeaderBoard,
 } from "../store/features/groups/groupsSlice.js";
 import { getSocket } from "../services/socketService.js";
@@ -166,7 +167,21 @@ const changeEnteredPeerVideoChat = () => {
 };
 
 const changeEnteredLeetcodeArea = () => {
+  const state = store.getState();
+  const socket = getSocket();
+
+  const [x, y] = randomSpawn("contestareamark");
+
+  store.dispatch(setPlayerX(x));
+  store.dispatch(setPlayerY(y));
   store.dispatch(setEnteredLeetcodeArea(true));
+  const data = {
+    groupId: state.groups.selectedGroup.id,
+    groupName: state.groups.selectedGroup.name,
+    posX: x,
+    posY: y,
+  };
+  socket.emit("i-moved", data);
 };
 
 const changeEnteredTypingGameArea = () => {
@@ -191,6 +206,8 @@ const showTypingLeaderBoard = () => {
 };
 
 const getTypingScoreBoard = () => {
+  const state = store.getState();
+
   const currentTime = new Date().getTime();
 
   const storedScoreBoard = JSON.parse(
@@ -215,10 +232,43 @@ const getTypingScoreBoard = () => {
   }
 };
 
+const showContestLeaderBoard = () => {
+  store.dispatch(setShowContestLeaderBoard(true));
+};
+
+const getContestLeaderBoard = () => {
+  const currentTime = new Date().getTime();
+  const storedData = localStorage.getItem("leetcode-leaderboard");
+  const storedLeaderBoard = storedData ? JSON.parse(storedData) : null;
+
+  if (storedLeaderBoard) {
+    if (currentTime - storedLeaderBoard.lastFetched > 1000 * 60 * 5) {
+      showContestLeaderBoard();
+      storedLeaderBoard.lastFetched = currentTime;
+      localStorage.setItem(
+        "leetcode-leaderboard",
+        JSON.stringify(storedLeaderBoard)
+      );
+    }
+  } else {
+    const newObj = {
+      lastFetched: currentTime,
+    };
+    localStorage.setItem("leetcode-leaderboard", JSON.stringify(newObj));
+    showContestLeaderBoard();
+  }
+};
+
 export const checkBoundary = (x, y, valX = 0, valY = 0) => {
+  const state = store.getState();
   if (x + valX <= 22 && y + valY <= 21) return true;
   if (x + valX >= 38 && y + valY <= 21) return true;
-
+  if (
+    state.groups.showTypingLeaderBoard ||
+    state.groups.showContestLeaderBoard
+  ) {
+    return true;
+  }
   const val = Matrix[valY + y][valX + x];
 
   switch (val) {
@@ -227,22 +277,20 @@ export const checkBoundary = (x, y, valX = 0, valY = 0) => {
     case 537:
       return true;
     case 519:
-      // alert("this is typing race leaderboard");
       getTypingScoreBoard();
       break;
     case 586:
-      // alert("This spwans random joke");
       getJoke();
       break;
     case 1055:
-      // notify("this is a random quote", "success");
       getQuote();
       break;
     case 1050:
-      alert("This is coding contest leaderboard");
+      getContestLeaderBoard();
       break;
     case 77:
-      alert("You entered competative coding contest area");
+      console.log("om");
+      return true;
       break;
     case 21:
       store.dispatch(setLastPlayerX(x));
@@ -261,7 +309,10 @@ export const checkBoundary = (x, y, valX = 0, valY = 0) => {
       return true;
       break;
     case 229:
+      store.dispatch(setLastPlayerX(x));
+      store.dispatch(setLastPlayerY(y));
       changeEnteredLeetcodeArea();
+      return true;
       break;
     case 18:
       return true;
